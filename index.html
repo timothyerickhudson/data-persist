@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DATA PERSIST</title>
+
+
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theme Toggle</title>
+ <style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+body{
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+</style>
+</head>
+<body>
+  <a href="https://timothyerickhudson.github.io/portfolio//"><h3>Back to portfolio</h3></a>
+ <br><br>
+
+<h2>LIGHT/DARK MODE SETTING</h2>
+
+
+
+<label class="switch">
+  <input id="modeSwitch" type="checkbox" onclick="updateMode(this.checked)">
+  <span class="slider round"></span>
+</label>
+
+<br><br>
+<button class="button-c" onclick="window.location.reload();">REFRESH PAGE</button>
+<br><br>
+<div style="width:333px">
+<p>This web application allows users to toggle between dark and light modes, with their selection saved in a database to persist across page refreshes and sessions.</p>
+</div>
+
+<br><br>
+
+<div>
+  <p id="techInfo" style="font-size: 12px; color: gray">
+    TECH:<br />
+    -S3 (STATIC STORAGE)<br />
+    -LAMBDA (SERVERLESS FUNCTION)<br />
+    -API GATEWAY (ROUTING)<br />
+    -RDS (DATA)<br />
+    -CERTIFICATE MANAGER (SECURITY)<br />
+  </p>
+
+  </div>
+
+
+
+</body>
+</html> 
+
+    
+    
+    
+    
+  
+
+    <style>
+      @font-face {
+        font-family: "Deansgate";
+        src: url("https://uiuxconcepts.com/fonts/DeansgateCondensed-Bold.ttf")
+          format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
+      
+      body {
+        font-family: "Deansgate";
+      }
+      button.button-c {
+        border-radius: 6px;
+        color: #000;
+        margin-right: 20px;
+        font-family: "Deansgate";
+        width: 144px;
+        line-height: 30px;
+        background-color: #fff;
+        position: relative;
+
+        box-shadow: 1px 1px 0, 2px 2px 0, 3px 3px 0, 4px 4px 0, 5px 5px 0;
+      }
+
+      
+
+
+      button.button-c:active {
+        top: 5px;
+        left: 5px;
+        box-shadow: 0 0 0 0;
+      }
+    </style>
+    <script>
+      window.onload = retrieveUsername();
+
+
+      async function retrieveUsername() {
+        const responseArea = document.getElementById("modeSwitch");
+        const url2 = `https://eoeduh18ea.execute-api.us-east-2.amazonaws.com/superStage/invoke`;
+        try {
+          const response2 = await fetch(url2, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          let data2 = {};
+          if (
+            response2.headers.get("Content-Type")?.includes("application/json")
+          ) {
+            data2 = await response2.json(); // Parse JSON if it's valid
+          }
+          console.log(data2.data[0].name);
+          if(data2.data[0].name == 'true'){
+            
+            document.body.style.backgroundColor = "darkgrey";
+            document.body.style.color = "white";
+            document.getElementById("techInfo").style.color = "white"
+          responseArea.checked = 'true';
+          }
+        } catch (error) {
+          console.log("b");
+        }
+      }
+
+      async function updateMode(modeValue) {
+         
+        const userId = 1; 
+
+        if (modeValue == true) {
+          
+          document.body.style.backgroundColor = "darkgrey";
+            document.body.style.color = "white";
+            document.getElementById("techInfo").style.color = "white"
+        }
+        else {
+          
+          document.body.style.backgroundColor = "white";
+            document.body.style.color = "black";
+            document.getElementById("techInfo").style.color = "gray"
+        }
+
+        
+
+        const url = `https://eoeduh18ea.execute-api.us-east-2.amazonaws.com/superStage/invoke?${userId}=${modeValue}`;
+        try {
+          const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              
+            }),
+          });
+
+          if (response.ok) {
+            
+            let data = {};
+            if (
+              response.headers.get("Content-Type")?.includes("application/json")
+            ) {
+              data = await response.json(); 
+            }
+            console.log("Success:", data);
+            
+          } else {
+            console.error(`Failed to get! Status: ${response.status}`);
+            
+          }
+        } catch (error) {
+          console.error("Error during fetch:", error);
+         
+        }
+      }
+    </script>
+  </body>
+</html>
